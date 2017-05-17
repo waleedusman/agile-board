@@ -15,4 +15,13 @@ public class IterationTest {
         assertThat(iteration.getColumn("starting"), is(notNullValue()));
         assertThat(iteration.getColumn("done"), is(notNullValue()));
     }
+
+    // Assuming every card must belong to a column
+    @Test
+    public void shouldPutCardInStartingColumnWhenAddedToIteration() {
+        Iteration iteration = new Iteration();
+        Card card = new Card("testone", "first card", 1);
+        iteration.addCard(card);
+        assertThat(iteration.getColumn(card), is(notNullValue()));
+    }
 }
