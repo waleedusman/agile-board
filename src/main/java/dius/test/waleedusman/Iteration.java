@@ -23,4 +23,12 @@ public class Iteration {
     public void addColumn(Column column) {
         columns.put(column.getName(), column);
     }
+
+    public Column getColumn(String columnName) {
+        return columns.get(columnName);
+    }
+
+    public int columnCount() {
+        return columns.size();
+    }
 }
