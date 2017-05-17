@@ -12,8 +12,11 @@ public class Iteration {
     private List<Card> cards;
     // map column-name to column
     private Map<String, Column> columns;
-    // map card to column - enforces card belongs to at most one column
-    private Map<Card, Column> cardPosition;
+    // map card_id -> column-name - this ensures that a card belongs to at most one column;
+    private Map<String, String> cardPosition;
+
+    private String lastMoveColumnName = "";
+    private String lastMoveCardId = "";
 
     public Iteration() {
         cards = new ArrayList<>();
@@ -25,7 +28,7 @@ public class Iteration {
 
     public void addCard(Card card) {
         cards.add(card);
-        cardPosition.put(card, getColumn(STARTING_COLUMN));
+        cardPosition.put(card.getId(), STARTING_COLUMN);
     }
 
     public void addColumn(Column column) {
@@ -36,11 +39,34 @@ public class Iteration {
         return columns.get(columnName);
     }
 
-    public Column getColumn(Card card) {
-        return cardPosition.get(card);
+    public String getColumnName(Card card) {
+        return cardPosition.get(card.getId());
     }
 
     public int columnCount() {
         return columns.size();
+    }
+
+    public void undoLastMove() {
+        if (!lastMoveCardId.isEmpty() && !lastMoveColumnName.isEmpty()) {
+            cardPosition.put(lastMoveCardId, lastMoveColumnName);
+        }
+        lastMoveCardId = "";
+        lastMoveColumnName = "";
+    }
+
+    public void moveCard(Card card, String toColumn) {
+        checkColumn(toColumn);
+        String currentColumnName = cardPosition.get(card.getId());
+
+        cardPosition.put(card.getId(), toColumn);
+        lastMoveCardId = card.getId();
+        lastMoveColumnName = currentColumnName;
+    }
+
+    private void checkColumn(String name) {
+        if (columns.get(name) == null) {
+            throw new IllegalArgumentException();
+        }
     }
 }
