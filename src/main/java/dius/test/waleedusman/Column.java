@@ -28,4 +28,8 @@ public class Column {
         }
         totalPoints += points;
     }
+
+    public Integer getWorkInProgressLimit() {
+        return workInProgressLimit;
+    }
 }

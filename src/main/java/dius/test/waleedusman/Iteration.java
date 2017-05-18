@@ -57,9 +57,9 @@ public class Iteration {
         Column column = columns.get(lastMoveColumnName);
         if ((card != null) && (column != null)) {
             doMove(card, column);
+            lastMoveCardId = "";
+            lastMoveColumnName = "";
         }
-        lastMoveCardId = "";
-        lastMoveColumnName = "";
     }
 
     public void moveCard(Card card, String toColumn) throws WorkExceededException {

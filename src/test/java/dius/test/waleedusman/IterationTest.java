@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class IterationTest {
     @Test
@@ -40,6 +41,17 @@ public class IterationTest {
         Card card = new Card("testone", "first card", 1);
         iteration.addCard(card);
         iteration.moveCard(card, "done");
+        iteration.undoLastMove();
+        assertThat(iteration.getColumnName(card), is(equalTo("starting")));
+    }
+
+    @Test
+    public void shouldDoNothingForConsecutiveUndo() throws Exception {
+        Iteration iteration = new Iteration();
+        Card card = new Card("testone", "first card", 1);
+        iteration.addCard(card);
+        iteration.moveCard(card, "done");
+        iteration.undoLastMove();
         iteration.undoLastMove();
         assertThat(iteration.getColumnName(card), is(equalTo("starting")));
     }
@@ -89,5 +101,12 @@ public class IterationTest {
         iteration.addCard(card2);
         iteration.moveCard(card1, "blah");
         iteration.moveCard(card2, "blah");
+    }
+
+    @Test
+    public void shouldNotAddReservedColumn() {
+        Iteration iteration = new Iteration();
+        iteration.addColumn(new Column("starting", 1));
+        assertThat(iteration.getColumn("starting").getWorkInProgressLimit(), is(nullValue()));
     }
 }
