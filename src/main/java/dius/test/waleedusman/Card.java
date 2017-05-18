@@ -18,4 +18,8 @@ public class Card {
     public String getId() {
         return id;
     }
+
+    public int getEstimate() {
+        return estimate;
+    }
 }
