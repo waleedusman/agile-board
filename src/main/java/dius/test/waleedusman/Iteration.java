@@ -29,9 +29,14 @@ public class Iteration {
     }
 
     public void addCard(Card card) {
+        try {
+            moveCard(card, STARTING_COLUMN);
+        } catch (WorkExceededException ex) {
+            // "starting"-column is guaranteed to always have no 'work limit'
+            // so this will never happen. Should log a message.
+            return;
+        }
         cards.put(card.getId(), card);
-        // "starting"-column is guaranteed to always have unlimited 'work limit'
-        cardPositions.put(card.getId(), STARTING_COLUMN);
     }
 
     public void addColumn(Column column) {
@@ -53,28 +58,34 @@ public class Iteration {
     }
 
     public void undoLastMove() throws WorkExceededException {
-        Card card = cards.get(lastMoveCardId);
-        Column column = columns.get(lastMoveColumnName);
-        if ((card != null) && (column != null)) {
-            doMove(card, column);
-            lastMoveCardId = "";
-            lastMoveColumnName = "";
+        if (lastMoveCardId.isEmpty() || lastMoveColumnName.isEmpty()) {
+            return;
         }
+        Card card = cards.get(lastMoveCardId);
+        Column fromColumn = columns.get(cardPositions.get(card.getId()));
+        Column toColumn = columns.get(lastMoveColumnName);
+        doMove(card, fromColumn, toColumn);
+        lastMoveCardId = "";
+        lastMoveColumnName = "";
     }
 
-    public void moveCard(Card card, String toColumn) throws WorkExceededException {
-        Column column = columns.get(toColumn);
-        if (column == null) {
+    public void moveCard(Card card, String toColumnName) throws WorkExceededException {
+        Column toColumn = columns.get(toColumnName);
+        if (toColumn == null) {
             throw new IllegalArgumentException();
         }
         String currentColumnName = cardPositions.get(card.getId());
+        Column fromColumn = columns.get(currentColumnName);
 
-        doMove(card, column);
+        doMove(card, fromColumn, toColumn);
         lastMoveCardId = card.getId();
         lastMoveColumnName = currentColumnName;
     }
 
-    private void doMove(Card card, Column toColumn) throws WorkExceededException {
+    private void doMove(Card card, Column fromColumn, Column toColumn) throws WorkExceededException {
+        if (fromColumn != null) {
+            fromColumn.addPoints(-card.getEstimate());
+        }
         toColumn.addPoints(card.getEstimate());
         cardPositions.put(card.getId(), toColumn.getName());
     }

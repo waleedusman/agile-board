@@ -22,7 +22,9 @@ public class IterationTest {
     public void shouldPutCardInStartingColumnWhenAddedToIteration() {
         Iteration iteration = new Iteration();
         Card card = new Card("testone", "first card", 1);
+        assertThat(iteration.getColumn("starting").getTotalPoints(), is(equalTo(0)));
         iteration.addCard(card);
+        assertThat(iteration.getColumn("starting").getTotalPoints(), is(equalTo(1)));
         assertThat(iteration.getColumnName(card), is(equalTo("starting")));
     }
 
@@ -61,7 +63,7 @@ public class IterationTest {
         Iteration iteration = new Iteration();
         Card card = new Card("testone", "first card", 1);
         iteration.addCard(card);
-        iteration.moveCard(card, "blah");
+        iteration.moveCard(card, "qa");
     }
 
     @Test
@@ -94,13 +96,27 @@ public class IterationTest {
     @Test(expected = WorkExceededException.class)
     public void shouldThrowExceptionWhenMoveResultsInWorkExceeded() throws Exception {
         Iteration iteration = new Iteration();
-        iteration.addColumn(new Column("blah", 1));
+        iteration.addColumn(new Column("qa", 1));
         Card card1 = new Card("c1", "first card", 1);
         Card card2 = new Card("c2", "second card", 1);
         iteration.addCard(card1);
         iteration.addCard(card2);
-        iteration.moveCard(card1, "blah");
-        iteration.moveCard(card2, "blah");
+        iteration.moveCard(card1, "qa");
+        iteration.moveCard(card2, "qa");
+    }
+
+    @Test
+    public void shouldUpdateWorkInProgressWhenCardMovedOutOfColumn() throws Exception {
+        Iteration iteration = new Iteration();
+        Column qaColumn = new Column("qa", 5);
+        iteration.addColumn(qaColumn);
+        Card card1 = new Card("c1", "first card", 1);
+        iteration.addCard(card1);
+        assertThat(qaColumn.getTotalPoints(), is(equalTo(0)));
+        iteration.moveCard(card1, qaColumn.getName());
+        assertThat(qaColumn.getTotalPoints(), is(equalTo(1)));
+        iteration.moveCard(card1, "done");
+        assertThat(qaColumn.getTotalPoints(), is(equalTo(0)));
     }
 
     @Test
