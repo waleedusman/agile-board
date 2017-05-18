@@ -3,8 +3,8 @@ plugins {
 }
 
 sourceCompatibility = 1.8
-group 'dius.test.waleedusman'
-version '1.0-SNAPSHOT'
+group 'com.example'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -12,4 +12,10 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.12'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
 }

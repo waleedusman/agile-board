@@ -1,4 +1,4 @@
-package dius.test.waleedusman;
+package com.example;
 
 public class WorkExceededException extends Exception {
     public WorkExceededException(String msg) {

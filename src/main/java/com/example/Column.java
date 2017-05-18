@@ -1,4 +1,4 @@
-package dius.test.waleedusman;
+package com.example;
 
 import static java.lang.String.format;
 

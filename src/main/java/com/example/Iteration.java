@@ -1,4 +1,4 @@
-package dius.test.waleedusman;
+package com.example;
 
 import java.util.Arrays;
 import java.util.HashMap;
